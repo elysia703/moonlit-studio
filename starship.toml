@@ -1,0 +1,243 @@
+# ==========================================
+# Moonlit Studio v2
+# A quiet, moonlit Starship theme
+# ==========================================
+
+"$schema" = "https://starship.rs/config-schema.json"
+
+add_newline = true
+command_timeout = 3000 # Preserve v1's allowance for Swift / Xcode startup.
+
+# Layout: keep v1's two lines, spacing, colors, and module placement.
+# Native modules have no dynamic three-language cap or +N counter.
+format = """
+[╭─](fg:#606A92) $os$directory$git_branch$git_status$swift$rust$java$kotlin$c$cpp$python$nodejs${custom.typescript}$golang$ruby$zig$dotnet$php$dart$cmd_duration$time
+[╰─](fg:#606A92) $character"""
+
+# ------------------------------------------
+# Operating System
+# ------------------------------------------
+
+[os]
+disabled = false
+format = "[$symbol]($style) "
+style = "fg:#BB9AF7"
+
+[os.symbols]
+Macos = ""
+
+# ------------------------------------------
+# Directory
+# ------------------------------------------
+
+[directory]
+style = "bold fg:#7DCFFF"
+format = "[$path]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+# ------------------------------------------
+# Git
+# ------------------------------------------
+
+[git_branch]
+symbol = " "
+style = "fg:#BB9AF7"
+format = " [${symbol}${branch}]($style)"
+truncation_length = 30
+truncation_symbol = "…"
+
+[git_status]
+style = "fg:#E0AF68"
+format = "([ $all_status$ahead_behind]($style))"
+
+conflicted = "=${count}"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕"
+untracked = "?${count}"
+modified = "!${count}"
+staged = "+${count}"
+deleted = "×${count}"
+stashed = "≡"
+
+# ------------------------------------------
+# Languages
+# ------------------------------------------
+
+[swift]
+symbol = "" # nf-dev-swift, U+E755
+style = "fg:#FF9E64"
+format = " [$symbol Swift( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["swift"]
+detect_files = ["Package.swift"]
+detect_folders = []
+
+[rust]
+symbol = "" # nf-dev-rust, U+E7A8
+style = "fg:#E0AF68"
+format = " [$symbol Rust( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["rs"]
+detect_files = ["Cargo.toml"]
+detect_folders = []
+
+[java]
+symbol = "" # nf-dev-java, U+E738
+style = "fg:#F7768E"
+format = " [$symbol Java( $version)]($style)"
+version_format = "${major}"
+detect_extensions = ["java","class","jar","gradle"]
+detect_files = ["pom.xml",".java-version"]
+detect_folders = []
+# Keep Groovy Gradle detection from v1; Kotlin Gradle scripts use kotlin.
+
+[kotlin]
+symbol = "" # nf-custom-kotlin, U+E634
+style = "fg:#BB9AF7"
+format = " [$symbol Kotlin( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["kt","kts"]
+detect_files = []
+detect_folders = []
+
+[c]
+symbol = "" # nf-custom-c, U+E61E
+style = "fg:#A9B9EF"
+format = " [$symbol C( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["c"]
+detect_files = []
+detect_folders = []
+# Shared .h headers alone are ambiguous; require a .c source file.
+
+[cpp]
+symbol = "" # nf-dev-cplusplus, U+E7A3
+style = "fg:#7AA2F7"
+format = " [$symbol C++( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["cpp","cc","cxx","c++","hpp","hh","hxx","h++","tcc"]
+detect_files = []
+detect_folders = []
+disabled = false # The native C++ module is disabled by default.
+
+[python]
+symbol = "" # nf-dev-python, U+E73C
+style = "fg:#E9D78E"
+format = " [$symbol Python( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["py","pyi","ipynb"]
+detect_files = [".python-version","Pipfile","__init__.py","pyproject.toml","requirements.txt","setup.py","tox.ini"]
+detect_folders = []
+detect_env_vars = [] # An active virtualenv alone must not trigger this module.
+
+[nodejs]
+symbol = "" # nf-dev-javascript, U+E781
+style = "fg:#E0AF68"
+format = " [$symbol JS( · Node $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["js","jsx","mjs","cjs","!ts","!tsx","!mts","!cts"]
+detect_files = ["package.json",".node-version",".nvmrc","!tsconfig.json","!tsconfig.build.json","!tsconfig.app.json","!tsconfig.node.json","!bunfig.toml","!bun.lock","!bun.lockb","!deno.json","!deno.jsonc","!deno.lock"]
+detect_folders = []
+# TS source/config markers suppress this JS fallback; version is Node.js.
+
+[golang]
+symbol = "" # nf-seti-go, U+E627
+style = "fg:#7DD3CF"
+format = " [$symbol Go( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["go"]
+detect_files = ["go.mod","go.sum","go.work",".go-version"]
+detect_folders = []
+
+[ruby]
+symbol = "" # nf-dev-ruby, U+E739
+style = "fg:#E87991"
+format = " [$symbol Ruby( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["rb"]
+detect_files = ["Gemfile",".ruby-version"]
+detect_folders = []
+detect_variables = [] # Version-manager variables alone must not trigger it.
+
+[zig]
+symbol = "" # nf-seti-zig, U+E6A9
+style = "fg:#FFB86C"
+format = " [$symbol Zig( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["zig"]
+detect_files = ["build.zig","build.zig.zon"]
+detect_folders = []
+
+[dotnet]
+symbol = "" # nf-dev-csharp, U+E7B2
+style = "fg:#B79DF2"
+format = " [$symbol C#( · .NET $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["cs","csx","csproj"]
+detect_files = []
+detect_folders = []
+heuristic = true # Version is the SDK version, not the C# language version.
+
+[php]
+symbol = "" # nf-dev-php, U+E73D
+style = "fg:#9DA9F6"
+format = " [$symbol PHP( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["php"]
+detect_files = ["composer.json",".php-version"]
+detect_folders = []
+
+[dart]
+symbol = "" # nf-dev-dart, U+E798
+style = "fg:#66C7E6"
+format = " [$symbol Dart( $version)]($style)"
+version_format = "${major}.${minor}"
+detect_extensions = ["dart"]
+detect_files = ["pubspec.yaml","pubspec.yml","pubspec.lock"]
+detect_folders = []
+
+# Starship has no native TypeScript module. This is the only custom module:
+# current-directory detection + one Node version command, no script file.
+# The version belongs to Node.js, not the TypeScript compiler.
+[custom.typescript]
+description = "TypeScript files with the active Node.js runtime"
+symbol = "" # nf-dev-typescript, U+E8CA; matches the JS Devicons family.
+style = "fg:#7DCFFF"
+format = " [$symbol TS( · Node $output)]($style)"
+command = "node --version"
+shell = ["sh"] # Non-interactive; does not load Zsh/Oh My Zsh startup files.
+detect_extensions = ["ts", "tsx", "mts", "cts"]
+detect_files = ["tsconfig.json", "tsconfig.build.json", "tsconfig.app.json", "tsconfig.node.json"]
+detect_folders = []
+ignore_timeout = false
+unsafe_no_escape = false
+
+# ------------------------------------------
+# Command Duration
+# ------------------------------------------
+
+[cmd_duration]
+min_time = 2000
+style = "fg:#E0AF68"
+format = " [󰔟 $duration]($style)"
+
+# ------------------------------------------
+# Time
+# ------------------------------------------
+
+[time]
+disabled = false
+time_format = "%H:%M"
+style = "fg:#7AA2F7"
+format = " [ $time]($style)"
+
+# ------------------------------------------
+# Prompt Character
+# ------------------------------------------
+
+[character]
+success_symbol = "[❯](bold fg:#9ECE6A)"
+error_symbol = "[❯](bold fg:#F7768E)"
+
